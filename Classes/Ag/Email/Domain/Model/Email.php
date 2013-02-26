@@ -33,17 +33,24 @@ class Email {
 	protected $sentDate;
 
 	/**
-	 * @var \Ag\Email\Domain\Model\EmailAddress
-	 * @ORM\OneToOne(cascade={"all"})
+	 * @var string
 	 */
-	protected $fromAddress;
+	protected $fromName;
 
 	/**
-	 * @var \Ag\Email\Domain\Model\EmailAddress
-	 * @ORM\OneToOne(cascade={"all"})
-	 * @ORM\Column(name="toAddress")
+	 * @var string
 	 */
-	protected $toAddress;
+	protected $fromEmail;
+
+	/**
+	 * @var string
+	 */
+	protected $toName;
+
+	/**
+	 * @var string
+	 */
+	protected $toEmail;
 
 	/**
 	 * @var string
@@ -51,10 +58,31 @@ class Email {
 	protected $subject;
 
 	/**
-	 * @var \Ag\Email\Domain\Model\Message
-	 * @ORM\OneToOne(cascade={"all"})
+	 * Ensure content can only be set once
+	 *
+	 * @var bool
 	 */
-	protected $message;
+	protected $contentHasBeenSet = FALSE;
+
+	/**
+	 * @var string
+	 * @ORM\Column(type="text")
+	 */
+	protected $plain;
+
+	/**
+	 * @var string
+	 * @ORM\Column(type="text")
+	 */
+	protected $html;
+
+	/**
+	 * This to ease querying and make sure that the version flag is increased
+	 * If only child to collection is added, parent version is not raised by doctrine
+	 *
+	 * @var int
+	 */
+	protected $readTimes = 0;
 
 	/**
 	 * @var \Doctrine\Common\Collections\Collection<\Ag\Email\Domain\Model\Read>
@@ -85,7 +113,8 @@ class Email {
 			throw new \InvalidArgumentException('From email address is required.');
 		}
 
-		$this->fromAddress = $from;
+		$this->fromName = $from->getName();
+		$this->fromEmail = $from->getEmail();
 	}
 
 	/**
@@ -97,7 +126,8 @@ class Email {
 			throw new \InvalidArgumentException('To email address is required.');
 		}
 
-		$this->toAddress = $to;
+		$this->toName = $to->getName();
+		$this->toEmail = $to->getEmail();
 	}
 
 	/**
@@ -124,11 +154,14 @@ class Email {
 			throw new \InvalidArgumentException('Message is required.');
 		}
 
-		if($this->message !== NULL) {
+		if($this->contentHasBeenSet) {
 			throw new \Exception('Message can only be set one time.');
 		}
 
-		$this->message = $message;
+		$this->contentHasBeenSet = TRUE;
+
+		$this->plain = $message->getPlain();
+		$this->html = $message->getHtml();
 	}
 
 	/**
@@ -137,6 +170,7 @@ class Email {
 	 * @return Read
 	 */
 	public function read($ip, $userAgent) {
+		$this->readTimes++;
 		$this->reads->add(new Read($ip, $userAgent, $this));
 	}
 
@@ -171,14 +205,14 @@ class Email {
 	 * @return \Ag\Email\Domain\Model\EmailAddress
 	 */
 	public function getFrom() {
-		return $this->fromAddress;
+		return new EmailAddress($this->fromName, $this->fromEmail);
 	}
 
 	/**
 	 * @return \Ag\Email\Domain\Model\Message
 	 */
 	public function getMessage() {
-		return $this->message;
+		return new Message($this->plain, $this->html);
 	}
 
 	/**
@@ -199,7 +233,7 @@ class Email {
 	 * @return \Ag\Email\Domain\Model\EmailAddress
 	 */
 	public function getTo() {
-		return $this->toAddress;
+		return new EmailAddress($this->toName, $this->toEmail);
 	}
 
 	/**
@@ -213,7 +247,7 @@ class Email {
 	 * @return bool
 	 */
 	public function isRead() {
-		return $this->reads->count() > 0;
+		return $this->isRead > 0;
 	}
 }
 ?>

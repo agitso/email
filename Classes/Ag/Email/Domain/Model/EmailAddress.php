@@ -1,19 +1,7 @@
 <?php
 namespace Ag\Email\Domain\Model;
 
-use TYPO3\Flow\Annotations as Flow;
-use Doctrine\ORM\Mapping as ORM;
-
-/**
- * @Flow\ValueObject
- */
 class EmailAddress {
-
-	/**
-	 * @var string
-	 * @ORM\Id
-	 */
-	protected $persistenceId;
 
 	/**
 	 * @var string
@@ -30,7 +18,6 @@ class EmailAddress {
 	 * @param string $email
 	 */
 	public function __construct($name, $email) {
-		$this->persistenceId = \TYPO3\Flow\Utility\Algorithms::generateUUID(); // bug in value object handling
 		$this->setName($name);
 		$this->setEmail($email);
 	}
