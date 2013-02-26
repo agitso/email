@@ -26,6 +26,7 @@ class Read {
 
 	/**
 	 * @var \Ag\Email\Domain\Model\Email
+	 * @ORM\ManyToOne(inversedBy="reads")
 	 */
 	protected $email;
 

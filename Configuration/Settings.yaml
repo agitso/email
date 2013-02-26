@@ -1,5 +1,6 @@
 Ag:
   Email:
+    disableActualSending: TRUE
 
     tracking:
       imageUrl: 'http://domain.dev/signature/###ID###/signature.gif'

@@ -36,13 +36,14 @@ class Email {
 	 * @var \Ag\Email\Domain\Model\EmailAddress
 	 * @ORM\OneToOne(cascade={"all"})
 	 */
-	protected $from;
+	protected $fromAddress;
 
 	/**
 	 * @var \Ag\Email\Domain\Model\EmailAddress
 	 * @ORM\OneToOne(cascade={"all"})
+	 * @ORM\Column(name="toAddress")
 	 */
-	protected $to;
+	protected $toAddress;
 
 	/**
 	 * @var string
@@ -84,7 +85,7 @@ class Email {
 			throw new \InvalidArgumentException('From email address is required.');
 		}
 
-		$this->from = $from;
+		$this->fromAddress = $from;
 	}
 
 	/**
@@ -96,7 +97,7 @@ class Email {
 			throw new \InvalidArgumentException('To email address is required.');
 		}
 
-		$this->to = $to;
+		$this->toAddress = $to;
 	}
 
 	/**
@@ -109,6 +110,8 @@ class Email {
 		if(empty($subject)) {
 			throw new \InvalidArgumentException('Subject is required.');
 		}
+
+		$this->subject = $subject;
 	}
 
 	/**
@@ -143,11 +146,11 @@ class Email {
 	 * @return void
 	 */
 	public function send() {
-		if($this->sendDate !== NULL) {
+		if($this->sentDate !== NULL) {
 			throw new \Exception('Email can only be sent once.');
 		}
 
-		$this->sendDate = new \DateTime();
+		$this->sentDate = new \DateTime();
 	}
 
 	/**
@@ -168,7 +171,7 @@ class Email {
 	 * @return \Ag\Email\Domain\Model\EmailAddress
 	 */
 	public function getFrom() {
-		return $this->from;
+		return $this->fromAddress;
 	}
 
 	/**
@@ -196,7 +199,7 @@ class Email {
 	 * @return \Ag\Email\Domain\Model\EmailAddress
 	 */
 	public function getTo() {
-		return $this->to;
+		return $this->toAddress;
 	}
 
 	/**

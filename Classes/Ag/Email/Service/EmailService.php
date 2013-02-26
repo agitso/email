@@ -6,7 +6,7 @@ use TYPO3\Flow\Annotations as Flow;
 /**
  * @Flow\Scope("singleton")
  */
-class EmailService implements EmailSenderServiceInterface {
+class EmailService {
 
 	/**
 	 * @Flow\Inject
@@ -39,6 +39,18 @@ class EmailService implements EmailSenderServiceInterface {
 	protected $systemLogger;
 
 	/**
+	 * @var array
+	 */
+	protected $settings;
+
+	/**
+	 * @param array $settings
+	 */
+	public function injectSettings(array $settings) {
+		$this->settings = $settings;
+	}
+
+	/**
 	 * @param string $toName
 	 * @param string $toEmail
 	 * @param string $subject
@@ -47,10 +59,10 @@ class EmailService implements EmailSenderServiceInterface {
 	public function send($toName, $toEmail, $subject, $message) {
 		try {
 			$email = $this->emailFactory->create($toName, $toEmail, $subject, $message);
-			$this->emailRepository->add($email);
 
 			$this->sendEmail($email);
 
+			$this->emailRepository->add($email);
 			$this->persistenceManager->persistAll();
 		} catch(\Exception $e) {
 			$this->systemLogger->log('Failed to send email.', LOG_CRIT, array(
@@ -100,6 +112,11 @@ class EmailService implements EmailSenderServiceInterface {
 	 * @return void
 	 */
 	protected function sendEmail($email) {
+		if($this->settings['disableActualSending']) {
+			$email->send();
+			return;
+		}
+
 		$message = new \TYPO3\SwiftMailer\Message();
 		$message
 				->setFrom($email->getFrom()->getEmail(), $email->getFrom()->getName())
