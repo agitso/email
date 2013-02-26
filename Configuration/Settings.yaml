@@ -1,0 +1,10 @@
+Ag:
+  Email:
+
+    tracking:
+      imageUrl: 'http://domain.dev/signature/###ID###/signature.gif'
+      resource: 'Ag.Email/Public/Images/clear.gif'
+
+    from:
+      email: 'contact@agitso.com'
+      name: 'Agitso'

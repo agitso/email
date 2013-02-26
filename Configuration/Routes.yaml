@@ -1,0 +1,8 @@
+-
+  name: 'Email'
+  uriPattern: 'signature/{emailId}/signature.gif'
+  defaults:
+    '@package':    'Ag.Email'
+    '@controller': 'Email'
+    '@action':     'read'
+    '@format':     'html'
