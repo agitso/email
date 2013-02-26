@@ -13,7 +13,7 @@ class EmailRepository extends \TYPO3\Flow\Persistence\Repository {
 	 * @return \Ag\Email\Domain\Model\Email
 	 */
 	public function findByIdentifier($emailId) {
-		parent::findByIdentifier($emailId);
+		return parent::findByIdentifier($emailId);
 	}
 
 

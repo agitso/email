@@ -10,7 +10,7 @@ class EmailService {
 
 	/**
 	 * @Flow\Inject
-	 * @var \Ag\Email\Factory\EmailFactory
+	 * @var \Ag\Email\Domain\Factory\EmailFactory
 	 */
 	protected $emailFactory;
 
@@ -55,11 +55,11 @@ class EmailService {
 	 * @param string $toEmail
 	 * @param string $subject
 	 * @param string $message
+	 * @param string $htmlContent
 	 */
-	public function send($toName, $toEmail, $subject, $message) {
+	public function send($toName, $toEmail, $subject, $message, $htmlContent='') {
 		try {
-			$email = $this->emailFactory->create($toName, $toEmail, $subject, $message);
-
+			$email = $this->emailFactory->create($toName, $toEmail, $subject, $message, $htmlContent);
 			$this->sendEmail($email);
 
 			$this->emailRepository->add($email);
@@ -70,6 +70,7 @@ class EmailService {
 				'toEmail'=>$toEmail,
 				'subject'=>$subject,
 				'message'=>$message,
+				'HTML'=>$htmlContent,
 				'exception'=>$this->renderException($e)
 			));
 		}
