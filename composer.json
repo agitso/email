@@ -5,7 +5,7 @@
     "version": "",
     "require": {
 		"typo3/flow": "2.0.*@beta",
-        "typo3/swiftmailer": "*"
+        "typo3/swiftmailer": "4.1.*"
     },
     "autoload": {
         "psr-0": {
