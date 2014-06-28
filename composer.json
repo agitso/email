@@ -4,7 +4,7 @@
     "description": "",
     "version": "",
     "require": {
-        "typo3/flow": "2.1.*",
+        "typo3/flow": "2.2.*",
         "typo3/swiftmailer": "5.0.*"
     },
     "autoload": {
